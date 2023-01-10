@@ -70,7 +70,7 @@ function getNewsList() {
 }
 
 //! implement search**********************************************
-// input.addEventListener("keypress", searchNews);
+input.addEventListener("keypress", searchNews);
 searchBtn.addEventListener("click", searchNews);
 function searchNews() {
   let searchInputTxt = document.getElementById("search-input").value.trim();
