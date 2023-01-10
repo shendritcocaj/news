@@ -1,14 +1,14 @@
 const searchBtn = document.getElementById("search-btn");
 const card = document.getElementById("card");
 const input = document.querySelector(".search-control");
-const sogodyLink = document.querySelector(".news-title a");
+const sLink = document.querySelector(".news-title a");
 const nextPage = document.querySelector(".next");
 const prevPage = document.querySelector(".prev");
 let currentPage = 1;
 
 //! BBC button -> loading...************************
-sogodyLink.addEventListener("click", function () {
-  sogodyLink.innerText = "Loading...";
+sLink.addEventListener("click", function () {
+  sLink.innerText = "Loading...";
   console.log("Loading...");
 });
 
