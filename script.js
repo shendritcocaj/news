@@ -79,18 +79,18 @@ function clearInput() {
 // input.addEventListener("keypress", searchNews);
 searchBtn.addEventListener("click", function searchNews() {
   let searchInputTxt = document.getElementById("search-input").value.trim();
-  if (searchInputTxt.value !== "")
-    fetch(
-      `  https://bing-news-search1.p.rapidapi.com/news/search?q=${searchInputTxt}&freshness=Day&textFormat=Raw&safeSearch=Off`,
-      options
-    )
-      .then((response) => response.json())
-      .then((response) => {
-        if (searchInputTxt.length > 0) {
-          let html = "";
-          if (response.value) {
-            response.value.forEach((card) => {
-              html += `
+
+  fetch(
+    `  https://bing-news-search1.p.rapidapi.com/news/search?q=${searchInputTxt}&freshness=Day&textFormat=Raw&safeSearch=Off`,
+    options
+  )
+    .then((response) => response.json())
+    .then((response) => {
+      if (searchInputTxt.length > 0) {
+        let html = "";
+        if (response.value) {
+          response.value.forEach((card) => {
+            html += `
           <div onclick="window.location.href ='${
             card.url
           }'" class="card first_card" id="card">
@@ -112,12 +112,17 @@ searchBtn.addEventListener("click", function searchNews() {
          
          
         </div>`;
-            });
-          }
-          card.innerHTML = html;
+          });
         }
-      })
-      .catch((err) => console.error(err));
+        card.innerHTML = html;
+
+        const getValue = document.getElementById("search-input");
+        if (getValue.value != "") {
+          getValue.value = "";
+        }
+      }
+    })
+    .catch((err) => console.error(err));
 });
 
 //! pag scheme ************************************************
