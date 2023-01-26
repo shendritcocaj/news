@@ -60,6 +60,7 @@ main {
   flex-wrap: wrap;
   gap: 2rem;
   justify-content: center;
+  width: 85%;
 }
 
 .card {
@@ -195,8 +196,15 @@ main {
   background-color: #aece76;
 }
 
+/* copyright */
+.text-center {
+  display: flex;
+  justify-content: center;
+}
+
 @media only screen and (max-width: 768px) {
   .cards {
+    margin: 0 auto;
     display: flex;
     flex-wrap: wrap;
     justify-content: center;
@@ -205,13 +213,14 @@ main {
     width: 30%;
   }
   .heading {
-    font-size: 6rem;
+    font-size: 5rem;
     margin: 0 auto;
   }
 }
 
 @media only screen and (max-width: 480px) {
   .cards {
+    margin: 0 auto;
     display: flex;
     flex-wrap: wrap;
     justify-content: center;
@@ -220,7 +229,7 @@ main {
     width: 80%;
   }
   .heading {
-    font-size: 4rem;
+    font-size: 3rem;
     margin: 0 auto;
   }
 }
