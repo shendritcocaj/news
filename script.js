@@ -9,7 +9,6 @@ let currentPage = 1;
 //! BBC button -> loading...************************
 sLink.addEventListener("click", function () {
   sLink.innerText = "Loading...";
-  console.log("Loading...");
 });
 
 const options = {
@@ -31,11 +30,12 @@ function formattedDate(str) {
 //! implement news cards**********************************************
 function getNewsList() {
   fetch(
-    "https://bing-news-search1.p.rapidapi.com/news?safeSearch=Off&textFormat",
+    "https://bing-news-search1.p.rapidapi.com/news?safeSearch=Off&textFormat=Raw",
     options
   )
     .then((response) => response.json())
     .then((response) => {
+      console.log(response);
       let html = "";
       if (response.value) {
         response.value.forEach((card) => {
@@ -70,13 +70,13 @@ function getNewsList() {
 }
 
 //! implement search**********************************************
-input.addEventListener("keypress", searchNews);
+// input.addEventListener("keypress", searchNews);
 searchBtn.addEventListener("click", searchNews);
 function searchNews() {
   let searchInputTxt = document.getElementById("search-input").value.trim();
 
   fetch(
-    `https://bing-news-search1.p.rapidapi.com/news/search?q=${searchInputTxt}&freshness=Day&textFormat=Raw&safeSearch=Off`,
+    `  https://bing-news-search1.p.rapidapi.com/news/search?q=${searchInputTxt}&freshness=Day&textFormat=Raw&safeSearch=Off`,
     options
   )
     .then((response) => response.json())
@@ -119,7 +119,6 @@ function searchNews() {
 nextPage.addEventListener("click", function () {
   currentPage++;
   paginate(currentPage, 4);
-  console.log("next");
 });
 
 prevPage.addEventListener("click", function () {
@@ -127,13 +126,14 @@ prevPage.addEventListener("click", function () {
     currentPage--;
   }
   paginate(currentPage, 4);
-  console.log("prev");
 });
 
 function paginate(pageNumber, pageSize) {
   let offset = (pageNumber - 1) * pageSize;
   fetch(
-    `https://bing-news-search1.p.rapidapi.com/news?count=${pageSize}&offset=${offset}&safeSearch=Off&textFormat=Raw`,
+    `https://bing-news-search1.p.rapidapi.com/news?count=${pageSize}&offset=${offset}&safeSearch=Off&textFormat=Raw
+    
+    `,
     options
   )
     .then((response) => response.json())
