@@ -1,181 +1,122 @@
 const searchBtn = document.getElementById("search-btn");
-const card = document.getElementById("card");
-const input = document.querySelector(".search-control");
-const sLink = document.querySelector(".news-title a");
-const nextPage = document.querySelector(".next");
-const prevPage = document.querySelector(".prev");
-let currentPage = 1;
+const prev = document.querySelector(".prev");
+const next = document.querySelector(".next");
 
-//! BBC button -> loading...************************
-sLink.addEventListener("click", function () {
-  sLink.innerText = "Loading...";
+const apiKey = "pub_19581912549fa66bf1d47db2974ff330dc204";
+let apiURL = `https://newsdata.io/api/1/news?apikey=${apiKey}&country=ca,gb,us`;
+let language = "en";
+var searchQuery = "";
+let newsCount = 0;
+
+const selectLanguage = document.getElementById("language-select");
+
+selectLanguage.addEventListener("change", async function (event) {
+  language = event.target.value;
+  fetchAndRenderNews();
 });
 
-const options = {
-  method: "GET",
-  headers: {
-    "X-BingApis-SDK": "true",
-    "X-RapidAPI-Key": "f9536e4d34msh4731d58698a3aecp160f1fjsn1ddb862668ab",
-    "X-RapidAPI-Host": "bing-news-search1.p.rapidapi.com",
-  },
-};
+function renderHtml(news) {
+  let html = "";
+  if (news) {
+    news
+      .filter((card, index) => {
+        let start = (currentPage - 1) * pageSize;
+        let end = currentPage * pageSize;
+
+        if (index >= start && index < end) return true;
+      })
+      .forEach((news) => {
+        html += `
+         <div onclick="window.location.href ='${
+           news.link
+         }'" class="card" id="card">
+
+        <img src="${
+          news.image_url ? news.image_url : "img.jpg"
+        }"alt="image" class="image"/>
+        <div class="card_text">
+          <p class="title">${news.title} </p>
+
+          <p class="news-text">${
+            news.description
+              ? news.description
+              : "Lorem ipsum dolor sit amet, consectetur adipisicing elit. Vero quam molestias dicta sint? Fuga accusamus earum, c"
+          }</p>
+        </div>
+        <div class="bottom-info">
+          <div class="date">${formattedDate(news.pubDate)}</div>
+          <div class="info-type">${news.category}</div>
+        </div>
+
+      </div>`;
+      });
+    document.getElementById("card").innerHTML = html;
+  }
+}
+
+fetchAndRenderNews();
+
+// pagination
+let pageSize = 4;
+let currentPage = 1;
+next.addEventListener("click", function nextPage() {
+  if (currentPage * pageSize < newsCount) currentPage++;
+  fetchAndRenderNews();
+});
+prev.addEventListener("click", function prevPage() {
+  if (currentPage > 1) currentPage--;
+  fetchAndRenderNews();
+});
+
+//! search**********************************************
+
+searchBtn.addEventListener("click", async function searchNews() {
+  searchQuery = document.getElementById("search-input").value.trim();
+  await fetchAndRenderNews();
+});
+
+function getUrl() {
+  return `${apiURL}&language=${language}&q=${searchQuery}`;
+}
+
+async function fetchFromApi(url) {
+  try {
+    const res = await fetch(url);
+    const newsData = await res.json();
+    return newsData.results;
+  } catch (err) {
+    console.log(err);
+  }
+}
+
+async function fetchAndRenderNews() {
+  console.log(searchQuery);
+  let url = getUrl();
+  let result = await fetchFromApi(url);
+  newsCount = result.length;
+  console.log(result);
+  renderHtml(result);
+}
+
+//! ****** butoni sogody->loading...
+(function () {
+  const linkButton = document.createElement("a");
+  linkButton.innerText = "BBC";
+  linkButton.setAttribute("href", "https://bbc.com");
+  const newsTitle = document.querySelector(".news-title");
+
+  linkButton.addEventListener("click", () => {
+    linkButton.innerHTML = "Loading...";
+  });
+
+  setTimeout(() => {
+    newsTitle.append(linkButton);
+  }, Math.random * 2000);
+})();
 
 // date format
 function formattedDate(str) {
   var ops = { year: "numeric" };
   ops.month = ops.day = "2-digit";
   return new Date(str).toLocaleDateString(ops);
-}
-
-//! implement news cards**********************************************
-function getNewsList() {
-  fetch(
-    "https://bing-news-search1.p.rapidapi.com/news?safeSearch=Off&textFormat=Raw",
-    options
-  )
-    .then((response) => response.json())
-    .then((response) => {
-      console.log(response);
-      let html = "";
-      if (response.value) {
-        response.value.forEach((card) => {
-          html += `
-          <div onclick="window.location.href ='${
-            card.url
-          }'" class="card first_card" id="card">
-       
-          <img src="${
-            card.image?.thumbnail?.contentUrl
-              ? card.image.thumbnail.contentUrl
-              : "img.png"
-          }"alt="image" class="image"/>
-          <div class="card_text">
-            <p class="title">${card.name} </p>
-
-            <p class="news-text">${card.description}</p>
-          </div>
-          <div class="bottom-info">
-            <div class="date">${formattedDate(card.datePublished)}</div>
-            <div class="info-type">${card._type}</div>
-          </div>
-         
-         
-        </div>`;
-        });
-      }
-      card.innerHTML = html;
-    })
-
-    .catch((err) => console.error(err));
-}
-
-//! implement search**********************************************
-function clearInput() {
-  const getValue = document.getElementById("search-btn");
-  if (getValue.value != "") {
-    getValue.value = "";
-  }
-}
-// input.addEventListener("keypress", searchNews);
-searchBtn.addEventListener("click", function searchNews() {
-  let searchInputTxt = document.getElementById("search-input").value.trim();
-
-  fetch(
-    `  https://bing-news-search1.p.rapidapi.com/news/search?q=${searchInputTxt}&freshness=Day&textFormat=Raw&safeSearch=Off`,
-    options
-  )
-    .then((response) => response.json())
-    .then((response) => {
-      if (searchInputTxt.length > 0) {
-        let html = "";
-        if (response.value) {
-          response.value.forEach((card) => {
-            html += `
-          <div onclick="window.location.href ='${
-            card.url
-          }'" class="card first_card" id="card">
-       
-          <img src="${
-            card.image?.thumbnail?.contentUrl
-              ? card.image.thumbnail.contentUrl
-              : "img.png"
-          }"alt="image" class="image"/>
-          <div class="card_text">
-            <p class="title">${card.name} </p>
-
-            <p class="news-text">${card.description}</p>
-          </div>
-          <div class="bottom-info">
-            <div class="date">${formattedDate(card.datePublished)}</div>
-            <div class="info-type">${card._type}</div>
-          </div>
-         
-         
-        </div>`;
-          });
-        }
-        card.innerHTML = html;
-
-        const getValue = document.getElementById("search-input");
-        if (getValue.value != "") {
-          getValue.value = "";
-        }
-      }
-    })
-    .catch((err) => console.error(err));
-});
-
-//! pag scheme ************************************************
-nextPage.addEventListener("click", function () {
-  currentPage++;
-  paginate(currentPage, 4);
-});
-
-prevPage.addEventListener("click", function () {
-  if (currentPage > 1) {
-    currentPage--;
-  }
-  paginate(currentPage, 4);
-});
-
-function paginate(pageNumber, pageSize) {
-  let offset = (pageNumber - 1) * pageSize;
-  fetch(
-    `https://bing-news-search1.p.rapidapi.com/news?count=${pageSize}&offset=${offset}&safeSearch=Off&textFormat=Raw
-    
-    `,
-    options
-  )
-    .then((response) => response.json())
-    .then((response) => {
-      console.log(response.value);
-      let html = "";
-      if (response.value) {
-        response.value.forEach((card) => {
-          html += `
-          <div onclick="window.location.href ='${
-            card.url
-          }'" class="card first_card" id="card">
-
-          <img src="${
-            card.image?.thumbnail?.contentUrl
-              ? card.image.thumbnail.contentUrl
-              : "img.png"
-          }"alt="image" class="image"/>
-          <div class="card_text">
-            <p class="title">${card.name} </p>
-
-            <p class="news-text">${card.description}</p>
-          </div>
-          <div class="bottom-info">
-            <div class="date">${formattedDate(card.datePublished)}</div>
-            <div class="info-type">${card._type}</div>
-          </div>
-
-        </div>`;
-        });
-      }
-      card.innerHTML = html;
-    })
-    .catch((err) => console.error(err));
 }
