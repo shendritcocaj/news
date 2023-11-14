@@ -5,7 +5,7 @@ const next = document.querySelector(".next");
 const apiKey = "pub_19581912549fa66bf1d47db2974ff330dc204";
 let apiURL = `https://newsdata.io/api/1/news?apikey=${apiKey}&country=ca,gb,us`;
 let language = "en";
-var searchQuery = "";
+var searchQuery = "world";
 let newsCount = 0;
 
 const selectLanguage = document.getElementById("language-select");
@@ -101,8 +101,8 @@ async function fetchAndRenderNews() {
 //! ****** butoni sogody->loading...
 (function () {
   const linkButton = document.createElement("a");
-  linkButton.innerText = "BBC";
-  linkButton.setAttribute("href", "https://bbc.com");
+  linkButton.innerText = "Sogody";
+  linkButton.setAttribute("href", "https://sogody.com");
   const newsTitle = document.querySelector(".news-title");
 
   linkButton.addEventListener("click", () => {

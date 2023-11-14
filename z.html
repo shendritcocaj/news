@@ -1,0 +1,17 @@
+<div class="card" id="card">
+  <img src="${ news.image_url ? news.image_url : "img.jpg" } class="image"/>
+  <div class="card_text">
+    <p class="title">${news.title}</p>
+
+    <p class="news-text">
+      ${ news.description ? news.description : "Lorem ipsum dolor sit amet,
+      consectetur adipisicing elit. Vero quam molestias dicta sint? Fuga
+      accusamus earum, c" }
+    </p>
+  </div>
+  <div class="bottom-info">
+    <div class="date">${formattedDate(news.pubDate)}</div>
+    <div class="info-type">${news.category}</div>
+  </div>
+</div>
+`;
